@@ -1,0 +1,125 @@
+<div>
+  <!-- Título -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Categorías</h1>
+    <p class="text-sm text-gray-500">Gestión de categorías de productos</p>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+    <div class="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
+      <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" /></svg>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 font-medium">Total categorías</p>
+        <p class="text-xl font-bold text-gray-800">12</p>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
+      <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 font-medium">Categorías activas</p>
+        <p class="text-xl font-bold text-gray-800">10</p>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
+      <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 font-medium">Categorías inactivas</p>
+        <p class="text-xl font-bold text-gray-800">2</p>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
+      <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 font-medium">Productos asociados</p>
+        <p class="text-xl font-bold text-gray-800">248</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra de búsqueda + Botón -->
+  <div class="flex items-center justify-between mb-4">
+    <div class="relative">
+      <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+      <input type="text" placeholder="Buscar categoría..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-80 text-sm bg-white">
+    </div>
+    <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-lg transition-colors flex items-center gap-2 shadow-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+      Nueva
+    </button>
+  </div>
+
+  <!-- Tabla -->
+  <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-gray-50 border-b border-gray-200">
+        <tr>
+          <th class="text-left py-3 px-4 font-semibold text-gray-600">ID</th>
+          <th class="text-left py-3 px-4 font-semibold text-gray-600">Nombre</th>
+          <th class="text-left py-3 px-4 font-semibold text-gray-600">Descripción</th>
+          <th class="text-left py-3 px-4 font-semibold text-gray-600">N° Productos</th>
+          <th class="text-left py-3 px-4 font-semibold text-gray-600">Estado</th>
+          <th class="text-left py-3 px-4 font-semibold text-gray-600">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        <tr class="hover:bg-gray-50 transition-colors">
+          <td class="py-3 px-4 text-gray-500">CAT-001</td>
+          <td class="py-3 px-4 font-medium text-gray-800">Envases</td>
+          <td class="py-3 px-4 text-gray-600">Envases plásticos de diferentes capacidades</td>
+          <td class="py-3 px-4 text-gray-600">45</td>
+          <td class="py-3 px-4"><span class="px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Activa</span></td>
+          <td class="py-3 px-4"><a class="text-blue-600 hover:text-blue-800 font-medium cursor-pointer text-xs">Editar</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 transition-colors">
+          <td class="py-3 px-4 text-gray-500">CAT-002</td>
+          <td class="py-3 px-4 font-medium text-gray-800">Tapas</td>
+          <td class="py-3 px-4 text-gray-600">Tapas rosca y presión para envases</td>
+          <td class="py-3 px-4 text-gray-600">32</td>
+          <td class="py-3 px-4"><span class="px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Activa</span></td>
+          <td class="py-3 px-4"><a class="text-blue-600 hover:text-blue-800 font-medium cursor-pointer text-xs">Editar</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 transition-colors">
+          <td class="py-3 px-4 text-gray-500">CAT-003</td>
+          <td class="py-3 px-4 font-medium text-gray-800">Botellas</td>
+          <td class="py-3 px-4 text-gray-600">Botellas PET de diferentes volúmenes</td>
+          <td class="py-3 px-4 text-gray-600">58</td>
+          <td class="py-3 px-4"><span class="px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Activa</span></td>
+          <td class="py-3 px-4"><a class="text-blue-600 hover:text-blue-800 font-medium cursor-pointer text-xs">Editar</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 transition-colors">
+          <td class="py-3 px-4 text-gray-500">CAT-004</td>
+          <td class="py-3 px-4 font-medium text-gray-800">Galoneras</td>
+          <td class="py-3 px-4 text-gray-600">Galoneras industriales y domésticas</td>
+          <td class="py-3 px-4 text-gray-600">28</td>
+          <td class="py-3 px-4"><span class="px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Activa</span></td>
+          <td class="py-3 px-4"><a class="text-blue-600 hover:text-blue-800 font-medium cursor-pointer text-xs">Editar</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 transition-colors">
+          <td class="py-3 px-4 text-gray-500">CAT-005</td>
+          <td class="py-3 px-4 font-medium text-gray-800">Bidones</td>
+          <td class="py-3 px-4 text-gray-600">Bidones de gran capacidad</td>
+          <td class="py-3 px-4 text-gray-600">15</td>
+          <td class="py-3 px-4"><span class="px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Activa</span></td>
+          <td class="py-3 px-4"><a class="text-blue-600 hover:text-blue-800 font-medium cursor-pointer text-xs">Editar</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 transition-colors">
+          <td class="py-3 px-4 text-gray-500">CAT-006</td>
+          <td class="py-3 px-4 font-medium text-gray-800">Accesorios</td>
+          <td class="py-3 px-4 text-gray-600">Dispensadores, válvulas y accesorios</td>
+          <td class="py-3 px-4 text-gray-600">70</td>
+          <td class="py-3 px-4"><span class="px-2.5 py-1 bg-gray-100 text-gray-500 rounded-full text-xs font-medium">Inactiva</span></td>
+          <td class="py-3 px-4"><a class="text-blue-600 hover:text-blue-800 font-medium cursor-pointer text-xs">Editar</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
