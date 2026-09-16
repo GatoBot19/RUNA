@@ -1,0 +1,10 @@
+-- =========================================================
+-- DATOS INICIALES - RUNA
+-- Sistema de gestión para mercados rurales
+-- =========================================================
+--
+-- Los usuarios y categorías iniciales son creados
+-- mediante DataSeeder.java.
+--
+-- Los productos, inventario, ventas, proveedores
+-- y compras se gestionarán mediante sus respectivos módulos.
