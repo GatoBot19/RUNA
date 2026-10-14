@@ -1,0 +1,118 @@
+<div>
+  <!-- Título -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-black text-slate-800 tracking-tight">Reportes y Business Intelligence</h1>
+    <p class="text-sm text-slate-500 font-medium">Exportación de datos contables, analítica de ventas y balances de stock</p>
+  </div>
+
+  <!-- Tarjetas de Exportación Rápida -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+    <!-- Reporte 1: Ventas Excel -->
+    <div class="backdrop-blur-xl bg-white/40 border border-white/60 rounded-3xl p-6 shadow-[0_8px_30px_rgba(100,80,180,0.06)] flex flex-col justify-between hover:bg-white/50 transition-all">
+      <div>
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500/20 to-teal-400/20 border border-white/60 flex items-center justify-center shadow-inner mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-black text-slate-800 mb-1">Ventas Históricas (Excel)</h3>
+        <p class="text-xs text-slate-500 mb-6">Detalle consolidado de comprobantes, clientes, montos y métodos de pago en formato .xlsx para hojas de cálculo.</p>
+      </div>
+      <button (click)="descargar('ventas-excel')" 
+              class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-95 text-white font-bold text-sm py-3 px-4 rounded-2xl transition-all shadow-[0_4px_16px_rgba(16,185,129,0.25)] flex items-center justify-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+        </svg>
+        Descargar Excel (.xlsx)
+      </button>
+    </div>
+
+    <!-- Reporte 2: Ventas PDF -->
+    <div class="backdrop-blur-xl bg-white/40 border border-white/60 rounded-3xl p-6 shadow-[0_8px_30px_rgba(100,80,180,0.06)] flex flex-col justify-between hover:bg-white/50 transition-all">
+      <div>
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-rose-500/20 to-pink-400/20 border border-white/60 flex items-center justify-center shadow-inner mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-rose-600" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-black text-slate-800 mb-1">Informe Oficial (PDF)</h3>
+        <p class="text-xs text-slate-500 mb-6">Documento formal con encabezados ejecutivos, tabla de auditoría y membrete de RUNA listo para impresión.</p>
+      </div>
+      <button (click)="descargar('ventas-pdf')"
+              class="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:opacity-95 text-white font-bold text-sm py-3 px-4 rounded-2xl transition-all shadow-[0_4px_16px_rgba(244,63,94,0.25)] flex items-center justify-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+        </svg>
+        Descargar PDF (.pdf)
+      </button>
+    </div>
+
+    <!-- Reporte 3: Inventario Excel -->
+    <div class="backdrop-blur-xl bg-white/40 border border-white/60 rounded-3xl p-6 shadow-[0_8px_30px_rgba(100,80,180,0.06)] flex flex-col justify-between hover:bg-white/50 transition-all">
+      <div>
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#7B5EA7]/20 to-[#2F80ED]/20 border border-white/60 flex items-center justify-center shadow-inner mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#2F80ED]" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-black text-slate-800 mb-1">Balance de Stock (Excel)</h3>
+        <p class="text-xs text-slate-500 mb-6">Kardex valorizado de productos, existencias en tiempo real, umbrales de seguridad y rotación de materiales.</p>
+      </div>
+      <button (click)="descargar('inventario-excel')"
+              class="w-full bg-gradient-to-r from-[#7B5EA7] to-[#2F80ED] hover:from-[#6A4F94] hover:to-[#2570D4] text-white font-bold text-sm py-3 px-4 rounded-2xl transition-all shadow-[0_8px_20px_rgba(100,60,180,0.25)] flex items-center justify-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+        </svg>
+        Descargar Balance (.xlsx)
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Historial de Auditoría / Reportes Recientes -->
+  <div class="backdrop-blur-xl bg-white/40 border border-white/60 rounded-3xl p-6 shadow-[0_8px_30px_rgba(100,80,180,0.06)]">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h3 class="text-base font-bold text-slate-800">Descargas Recientes</h3>
+        <p class="text-xs text-slate-500">Historial de emisiones automáticas del sistema</p>
+      </div>
+      <span class="text-xs font-semibold text-slate-400">Actualizado hace un momento</span>
+    </div>
+
+    <div class="space-y-3">
+      <div class="flex items-center justify-between p-3 rounded-2xl bg-white/40 border border-white/50">
+        <div class="flex items-center gap-3">
+          <span class="p-2 rounded-xl bg-emerald-100 text-emerald-700 font-bold text-xs">XLSX</span>
+          <div>
+            <p class="text-xs font-bold text-slate-800">ventas-runa-septiembre-2024.xlsx</p>
+            <p class="text-[11px] text-slate-500">Generado por: Administrador • 156 registros procesados</p>
+          </div>
+        </div>
+        <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">Completado</span>
+      </div>
+
+      <div class="flex items-center justify-between p-3 rounded-2xl bg-white/40 border border-white/50">
+        <div class="flex items-center gap-3">
+          <span class="p-2 rounded-xl bg-rose-100 text-rose-700 font-bold text-xs">PDF</span>
+          <div>
+            <p class="text-xs font-bold text-slate-800">ventas-runa-ejecutivo.pdf</p>
+            <p class="text-[11px] text-slate-500">Generado por: Administrador • Informe consolidado</p>
+          </div>
+        </div>
+        <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">Completado</span>
+      </div>
+
+      <div class="flex items-center justify-between p-3 rounded-2xl bg-white/40 border border-white/50">
+        <div class="flex items-center gap-3">
+          <span class="p-2 rounded-xl bg-blue-100 text-[#2F80ED] font-bold text-xs">XLSX</span>
+          <div>
+            <p class="text-xs font-bold text-slate-800">inventario-runa-cierre.xlsx</p>
+            <p class="text-[11px] text-slate-500">Generado por: Administrador • 248 productos auditados</p>
+          </div>
+        </div>
+        <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">Completado</span>
+      </div>
+    </div>
+  </div>
+</div>
