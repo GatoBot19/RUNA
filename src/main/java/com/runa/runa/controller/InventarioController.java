@@ -1,12 +1,16 @@
+
 package com.runa.runa.controller;
 
 import com.runa.runa.model.dto.InventarioDTO;
+import com.runa.runa.model.dto.InventarioUpdateDTO;
 import com.runa.runa.model.dto.ResponseDTO;
 import com.runa.runa.model.entity.Inventario;
 import com.runa.runa.model.mapper.InventarioMapper;
 import com.runa.runa.service.InventarioService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +27,13 @@ public class InventarioController {
     private final InventarioMapper inventarioMapper;
 
     // =========================================================
-    // LISTAR TODO EL INVENTARIO
+    // 1. LISTAR TODO EL INVENTARIO
     // =========================================================
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDTO<List<InventarioDTO>>> getAllInventario() {
+    public ResponseEntity<ResponseDTO<List<InventarioDTO>>>
+    getAllInventario() {
 
         log.info("GET /api/inventario");
 
@@ -43,7 +48,7 @@ public class InventarioController {
     }
 
     // =========================================================
-    // INVENTARIO CON STOCK DISPONIBLE
+    // 2. INVENTARIO CON STOCK DISPONIBLE
     // =========================================================
 
     @GetMapping("/disponible")
@@ -63,17 +68,14 @@ public class InventarioController {
     }
 
     // =========================================================
-    // BUSCAR INVENTARIO POR ID
+    // 3. BUSCAR INVENTARIO POR ID
     // =========================================================
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDTO<InventarioDTO>>
     getInventarioById(@PathVariable Long id) {
 
-        log.info(
-                "GET /api/inventario/{}",
-                id
-        );
+        log.info("GET /api/inventario/{}", id);
 
         Inventario inventario =
                 inventarioService.findById(id)
@@ -92,7 +94,7 @@ public class InventarioController {
     }
 
     // =========================================================
-    // BUSCAR INVENTARIO POR PRODUCTO
+    // 4. BUSCAR INVENTARIO POR PRODUCTO
     // =========================================================
 
     @GetMapping("/producto/{idProducto}")
@@ -122,7 +124,7 @@ public class InventarioController {
     }
 
     // =========================================================
-    // PRODUCTOS CON STOCK BAJO
+    // 5. PRODUCTOS CON STOCK BAJO
     // =========================================================
 
     @GetMapping("/stock-bajo")
@@ -143,7 +145,7 @@ public class InventarioController {
     }
 
     // =========================================================
-    // INVENTARIO POR CATEGORÍA
+    // 6. INVENTARIO POR CATEGORIA
     // =========================================================
 
     @GetMapping("/categoria/{idCategoria}")
@@ -167,7 +169,7 @@ public class InventarioController {
     }
 
     // =========================================================
-    // CREAR INVENTARIO
+    // 7. CREAR INVENTARIO
     // =========================================================
 
     @PostMapping
@@ -199,7 +201,7 @@ public class InventarioController {
     }
 
     // =========================================================
-    // ACTUALIZAR INVENTARIO
+    // 8. ACTUALIZAR INVENTARIO PARCIALMENTE
     // =========================================================
 
     @PutMapping("/{id}")
@@ -208,20 +210,31 @@ public class InventarioController {
     actualizarInventario(
             @PathVariable Long id,
             @RequestParam(required = false) Long idProducto,
-            @RequestBody InventarioDTO inventarioDTO) {
+            @RequestBody InventarioUpdateDTO datos) {
 
-        log.info(
-                "PUT /api/inventario/{}",
-                id
+        log.info("PUT /api/inventario/{}", id);
+
+        if (datos == null) {
+            throw new IllegalArgumentException(
+                    "Los datos del inventario son obligatorios"
+            );
+        }
+
+        // Crear entidad para recibir los cambios.
+        Inventario cambios = new Inventario();
+
+        // Los campos omitidos se mantienen en null.
+        cambios.setStockTotal(datos.getStockTotal());
+        cambios.setStockDisponible(
+                datos.getStockDisponible()
         );
+        cambios.setStockMinimo(datos.getStockMinimo());
 
-        Inventario inventario =
-                inventarioMapper.toEntity(inventarioDTO);
-
+        // Actualizar solo los valores proporcionados.
         Inventario actualizado =
                 inventarioService.update(
                         id,
-                        inventario,
+                        cambios,
                         idProducto
                 );
 
@@ -233,7 +246,7 @@ public class InventarioController {
     }
 
     // =========================================================
-    // ELIMINAR INVENTARIO
+    // 9. ELIMINAR INVENTARIO
     // =========================================================
 
     @DeleteMapping("/{id}")
@@ -256,7 +269,7 @@ public class InventarioController {
     }
 
     // =========================================================
-    // AUMENTAR STOCK
+    // 10. AUMENTAR STOCK
     // =========================================================
 
     @PutMapping("/producto/{idProducto}/aumentar")
@@ -286,7 +299,7 @@ public class InventarioController {
     }
 
     // =========================================================
-    // REDUCIR STOCK
+    // 11. REDUCIR STOCK
     // =========================================================
 
     @PutMapping("/producto/{idProducto}/reducir")
@@ -316,7 +329,7 @@ public class InventarioController {
     }
 
     // =========================================================
-    // VERIFICAR DISPONIBILIDAD
+    // 12. VERIFICAR DISPONIBILIDAD
     // =========================================================
 
     @GetMapping("/producto/{idProducto}/disponibilidad")
