@@ -1,3 +1,4 @@
+
 package com.runa.runa.service;
 
 import com.runa.runa.model.entity.Inventario;
@@ -7,18 +8,28 @@ import java.util.Optional;
 
 public interface InventarioService {
 
-    // Operaciones básicas
+    // =========================================================
+    // OPERACIONES BASICAS
+    // =========================================================
+
     List<Inventario> findAll();
 
     Optional<Inventario> findById(Long id);
 
     Inventario save(Inventario inventario, Long idProducto);
 
-    Inventario update(Long id, Inventario inventario, Long idProducto);
+    Inventario update(
+            Long id,
+            Inventario inventario,
+            Long idProducto
+    );
 
     void deleteById(Long id);
 
-    // Consultas de inventario
+    // =========================================================
+    // CONSULTAS DE INVENTARIO
+    // =========================================================
+
     List<Inventario> findConStockDisponible();
 
     Optional<Inventario> findByProducto(Long idProducto);
@@ -27,11 +38,32 @@ public interface InventarioService {
 
     List<Inventario> findByCategoria(Long idCategoria);
 
-    // Operaciones de stock
-    Inventario aumentarStock(Long idProducto, Integer cantidad);
+    // =========================================================
+    // OPERACIONES DE STOCK
+    // =========================================================
 
-    Inventario reducirStock(Long idProducto, Integer cantidad);
+    Inventario aumentarStock(
+            Long idProducto,
+            Integer cantidad
+    );
 
-    // Verificar disponibilidad
-    boolean verificarDisponibilidad(Long idProducto, Integer cantidad);
+    Inventario reducirStock(
+            Long idProducto,
+            Integer cantidad
+    );
+
+    // Devolver productos por cancelacion de una venta
+    Inventario devolverStock(
+            Long idProducto,
+            Integer cantidad
+    );
+
+    // =========================================================
+    // VERIFICAR DISPONIBILIDAD
+    // =========================================================
+
+    boolean verificarDisponibilidad(
+            Long idProducto,
+            Integer cantidad
+    );
 }
