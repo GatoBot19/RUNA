@@ -1,3 +1,4 @@
+
 package com.runa.runa.service.impl;
 
 import com.runa.runa.model.entity.Inventario;
@@ -5,8 +6,10 @@ import com.runa.runa.model.entity.Producto;
 import com.runa.runa.repository.InventarioRepository;
 import com.runa.runa.repository.ProductoRepository;
 import com.runa.runa.service.InventarioService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,29 +25,33 @@ public class InventarioServiceImpl implements InventarioService {
     private final ProductoRepository productoRepository;
 
     // =========================================================
-    // LISTAR TODO EL INVENTARIO
+    // 1. LISTAR TODO EL INVENTARIO
     // =========================================================
 
     @Override
     @Transactional(readOnly = true)
     public List<Inventario> findAll() {
+
         log.info("Buscando todo el inventario");
+
         return inventarioRepository.findAll();
     }
 
     // =========================================================
-    // BUSCAR INVENTARIO POR ID
+    // 2. BUSCAR INVENTARIO POR ID
     // =========================================================
 
     @Override
     @Transactional(readOnly = true)
     public Optional<Inventario> findById(Long id) {
+
         log.info("Buscando inventario con ID: {}", id);
+
         return inventarioRepository.findById(id);
     }
 
     // =========================================================
-    // CREAR INVENTARIO
+    // 3. CREAR INVENTARIO
     // =========================================================
 
     @Override
@@ -53,19 +60,27 @@ public class InventarioServiceImpl implements InventarioService {
 
         log.info("Creando inventario para producto ID: {}", idProducto);
 
+        if (inventario == null) {
+            throw new IllegalArgumentException(
+                    "Los datos del inventario son obligatorios"
+            );
+        }
+
         if (idProducto == null) {
-            throw new IllegalArgumentException("El ID del producto es obligatorio");
+            throw new IllegalArgumentException(
+                    "El ID del producto es obligatorio"
+            );
         }
 
         Producto producto = productoRepository.findById(idProducto)
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new IllegalArgumentException(
                                 "Producto no encontrado con ID: " + idProducto
                         )
                 );
 
         if (inventarioRepository.existsByProductoIdProducto(idProducto)) {
-            throw new RuntimeException(
+            throw new IllegalStateException(
                     "Ya existe un inventario para el producto: "
                             + producto.getNombre()
             );
@@ -83,22 +98,7 @@ public class InventarioServiceImpl implements InventarioService {
             inventario.setStockMinimo(0);
         }
 
-        if (inventario.getStockTotal() < 0
-                || inventario.getStockDisponible() < 0
-                || inventario.getStockMinimo() < 0) {
-
-            throw new IllegalArgumentException(
-                    "Los valores de stock no pueden ser negativos"
-            );
-        }
-
-        if (inventario.getStockDisponible()
-                > inventario.getStockTotal()) {
-
-            throw new IllegalArgumentException(
-                    "El stock disponible no puede ser mayor al stock total"
-            );
-        }
+        validarValoresInventario(inventario);
 
         inventario.setProducto(producto);
 
@@ -106,7 +106,7 @@ public class InventarioServiceImpl implements InventarioService {
     }
 
     // =========================================================
-    // ACTUALIZAR INVENTARIO
+    // 4. ACTUALIZAR INVENTARIO
     // =========================================================
 
     @Override
@@ -118,24 +118,29 @@ public class InventarioServiceImpl implements InventarioService {
 
         log.info("Actualizando inventario ID: {}", id);
 
-        Inventario existente = inventarioRepository.findById(id)
+        if (inventario == null) {
+            throw new IllegalArgumentException(
+                    "Los datos del inventario son obligatorios"
+            );
+        }
+
+        Inventario existente = inventarioRepository
+                .findByIdWithLock(id)
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new IllegalArgumentException(
                                 "Inventario no encontrado con ID: " + id
                         )
                 );
 
         if (idProducto != null) {
 
-            Producto producto = productoRepository.findById(idProducto)
-                    .orElseThrow(() ->
-                            new RuntimeException(
-                                    "Producto no encontrado con ID: "
-                                            + idProducto
-                            )
-                    );
+            Long productoActual = existente.getProducto().getIdProducto();
 
-            existente.setProducto(producto);
+            if (!productoActual.equals(idProducto)) {
+                throw new IllegalStateException(
+                        "No se puede cambiar el producto de un inventario existente"
+                );
+            }
         }
 
         if (inventario.getStockTotal() != null) {
@@ -143,39 +148,20 @@ public class InventarioServiceImpl implements InventarioService {
         }
 
         if (inventario.getStockDisponible() != null) {
-            existente.setStockDisponible(
-                    inventario.getStockDisponible()
-            );
+            existente.setStockDisponible(inventario.getStockDisponible());
         }
 
         if (inventario.getStockMinimo() != null) {
-            existente.setStockMinimo(
-                    inventario.getStockMinimo()
-            );
+            existente.setStockMinimo(inventario.getStockMinimo());
         }
 
-        if (existente.getStockTotal() < 0
-                || existente.getStockDisponible() < 0
-                || existente.getStockMinimo() < 0) {
-
-            throw new IllegalArgumentException(
-                    "Los valores de stock no pueden ser negativos"
-            );
-        }
-
-        if (existente.getStockDisponible()
-                > existente.getStockTotal()) {
-
-            throw new IllegalArgumentException(
-                    "El stock disponible no puede ser mayor al stock total"
-            );
-        }
+        validarValoresInventario(existente);
 
         return inventarioRepository.save(existente);
     }
 
     // =========================================================
-    // ELIMINAR INVENTARIO
+    // 5. ELIMINAR INVENTARIO
     // =========================================================
 
     @Override
@@ -184,17 +170,19 @@ public class InventarioServiceImpl implements InventarioService {
 
         log.info("Eliminando inventario ID: {}", id);
 
-        if (!inventarioRepository.existsById(id)) {
-            throw new RuntimeException(
-                    "Inventario no encontrado con ID: " + id
-            );
-        }
+        Inventario inventario = inventarioRepository
+                .findByIdWithLock(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Inventario no encontrado con ID: " + id
+                        )
+                );
 
-        inventarioRepository.deleteById(id);
+        inventarioRepository.delete(inventario);
     }
 
     // =========================================================
-    // INVENTARIO CON STOCK DISPONIBLE
+    // 6. INVENTARIO CON STOCK DISPONIBLE
     // =========================================================
 
     @Override
@@ -208,7 +196,7 @@ public class InventarioServiceImpl implements InventarioService {
     }
 
     // =========================================================
-    // BUSCAR POR PRODUCTO
+    // 7. BUSCAR INVENTARIO POR PRODUCTO
     // =========================================================
 
     @Override
@@ -225,7 +213,7 @@ public class InventarioServiceImpl implements InventarioService {
     }
 
     // =========================================================
-    // STOCK BAJO
+    // 8. BUSCAR PRODUCTOS CON STOCK BAJO
     // =========================================================
 
     @Override
@@ -238,7 +226,7 @@ public class InventarioServiceImpl implements InventarioService {
     }
 
     // =========================================================
-    // INVENTARIO POR CATEGORÍA
+    // 9. BUSCAR INVENTARIO POR CATEGORIA
     // =========================================================
 
     @Override
@@ -246,7 +234,7 @@ public class InventarioServiceImpl implements InventarioService {
     public List<Inventario> findByCategoria(Long idCategoria) {
 
         log.info(
-                "Buscando inventario de la categoría ID: {}",
+                "Buscando inventario de la categoria ID: {}",
                 idCategoria
         );
 
@@ -254,7 +242,7 @@ public class InventarioServiceImpl implements InventarioService {
     }
 
     // =========================================================
-    // AUMENTAR STOCK
+    // 10. AUMENTAR STOCK POR NUEVA MERCADERIA
     // =========================================================
 
     @Override
@@ -274,7 +262,7 @@ public class InventarioServiceImpl implements InventarioService {
         Inventario inventario = inventarioRepository
                 .findByProductoWithLock(idProducto)
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new IllegalArgumentException(
                                 "Inventario no encontrado para el producto ID: "
                                         + idProducto
                         )
@@ -286,7 +274,7 @@ public class InventarioServiceImpl implements InventarioService {
     }
 
     // =========================================================
-    // REDUCIR STOCK
+    // 11. REDUCIR STOCK POR VENTA
     // =========================================================
 
     @Override
@@ -306,14 +294,13 @@ public class InventarioServiceImpl implements InventarioService {
         Inventario inventario = inventarioRepository
                 .findByProductoWithLock(idProducto)
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new IllegalArgumentException(
                                 "Inventario no encontrado para el producto ID: "
                                         + idProducto
                         )
                 );
 
         if (!inventario.tieneStockDisponible(cantidad)) {
-
             throw new IllegalStateException(
                     "No hay stock disponible suficiente. "
                             + "Stock actual: "
@@ -329,7 +316,39 @@ public class InventarioServiceImpl implements InventarioService {
     }
 
     // =========================================================
-    // VERIFICAR DISPONIBILIDAD
+    // 12. DEVOLVER STOCK POR CANCELACION DE VENTA
+    // =========================================================
+
+    @Override
+    @Transactional
+    public Inventario devolverStock(
+            Long idProducto,
+            Integer cantidad) {
+
+        log.info(
+                "Devolviendo {} unidades al inventario del producto ID: {}",
+                cantidad,
+                idProducto
+        );
+
+        validarCantidad(cantidad);
+
+        Inventario inventario = inventarioRepository
+                .findByProductoWithLock(idProducto)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Inventario no encontrado para el producto ID: "
+                                        + idProducto
+                        )
+                );
+
+        inventario.devolverStock(cantidad);
+
+        return inventarioRepository.save(inventario);
+    }
+
+    // =========================================================
+    // 13. VERIFICAR DISPONIBILIDAD
     // =========================================================
 
     @Override
@@ -340,24 +359,54 @@ public class InventarioServiceImpl implements InventarioService {
 
         validarCantidad(cantidad);
 
-        Integer stockDisponible =
-                inventarioRepository
-                        .findStockDisponibleByProducto(idProducto);
+        Integer stockDisponible = inventarioRepository
+                .findStockDisponibleByProducto(idProducto);
 
         return stockDisponible != null
                 && stockDisponible >= cantidad;
     }
 
     // =========================================================
-    // VALIDAR CANTIDAD
+    // 14. VALIDAR CANTIDAD
     // =========================================================
 
     private void validarCantidad(Integer cantidad) {
 
         if (cantidad == null || cantidad <= 0) {
-
             throw new IllegalArgumentException(
                     "La cantidad debe ser mayor que cero"
+            );
+        }
+    }
+
+    // =========================================================
+    // 15. VALIDAR VALORES DEL INVENTARIO
+    // =========================================================
+
+    private void validarValoresInventario(Inventario inventario) {
+
+        if (inventario.getStockTotal() == null
+                || inventario.getStockDisponible() == null
+                || inventario.getStockMinimo() == null) {
+
+            throw new IllegalArgumentException(
+                    "Los valores del inventario son obligatorios"
+            );
+        }
+
+        if (inventario.getStockTotal() < 0
+                || inventario.getStockDisponible() < 0
+                || inventario.getStockMinimo() < 0) {
+
+            throw new IllegalArgumentException(
+                    "Los valores de stock no pueden ser negativos"
+            );
+        }
+
+        if (inventario.getStockDisponible() > inventario.getStockTotal()) {
+
+            throw new IllegalArgumentException(
+                    "El stock disponible no puede ser mayor al stock total"
             );
         }
     }

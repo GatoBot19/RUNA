@@ -1,3 +1,4 @@
+
 package com.runa.runa.model.entity;
 
 import jakarta.persistence.*;
@@ -51,51 +52,99 @@ public class Inventario {
     // =========================================================
 
     public boolean tieneStockDisponible(Integer cantidad) {
-        return stockDisponible >= cantidad;
+
+        return cantidad != null
+                && cantidad > 0
+                && stockDisponible != null
+                && stockDisponible >= cantidad;
     }
 
     // =========================================================
-    // REDUCIR STOCK
+    // REDUCIR STOCK POR VENTA
     // =========================================================
 
     public void reducirStock(Integer cantidad) {
 
-        if (cantidad == null || cantidad <= 0) {
-            throw new IllegalArgumentException(
-                    "La cantidad debe ser mayor que cero"
-            );
-        }
+        validarCantidad(cantidad);
 
-        if (tieneStockDisponible(cantidad)) {
-            this.stockDisponible -= cantidad;
-        } else {
+        if (!tieneStockDisponible(cantidad)) {
             throw new IllegalStateException(
                     "No hay stock disponible suficiente"
             );
         }
+
+        this.stockDisponible -= cantidad;
     }
 
     // =========================================================
-    // AUMENTAR STOCK
+    // AUMENTAR STOCK POR REPOSICION
     // =========================================================
 
     public void aumentarStock(Integer cantidad) {
+
+        validarCantidad(cantidad);
+
+        if (stockDisponible == null || stockTotal == null) {
+            throw new IllegalStateException(
+                    "Los valores del inventario no pueden ser nulos"
+            );
+        }
+
+        this.stockDisponible = Math.addExact(
+                this.stockDisponible,
+                cantidad
+        );
+
+        this.stockTotal = Math.addExact(
+                this.stockTotal,
+                cantidad
+        );
+    }
+
+    // =========================================================
+    // DEVOLVER STOCK POR CANCELACION DE VENTA
+    // =========================================================
+
+    public void devolverStock(Integer cantidad) {
+
+        validarCantidad(cantidad);
+
+        if (stockDisponible == null || stockTotal == null) {
+            throw new IllegalStateException(
+                    "Los valores del inventario no pueden ser nulos"
+            );
+        }
+
+        if (stockDisponible > stockTotal - cantidad) {
+            throw new IllegalStateException(
+                    "La devolucion supera el stock total registrado"
+            );
+        }
+
+        this.stockDisponible += cantidad;
+    }
+
+    // =========================================================
+    // VERIFICAR STOCK MINIMO
+    // =========================================================
+
+    public boolean necesitaReposicion() {
+
+        return stockDisponible != null
+                && stockMinimo != null
+                && stockDisponible <= stockMinimo;
+    }
+
+    // =========================================================
+    // VALIDAR CANTIDAD
+    // =========================================================
+
+    private void validarCantidad(Integer cantidad) {
 
         if (cantidad == null || cantidad <= 0) {
             throw new IllegalArgumentException(
                     "La cantidad debe ser mayor que cero"
             );
         }
-
-        this.stockDisponible += cantidad;
-        this.stockTotal += cantidad;
-    }
-
-    // =========================================================
-    // VERIFICAR STOCK MÍNIMO
-    // =========================================================
-
-    public boolean necesitaReposicion() {
-        return stockDisponible <= stockMinimo;
     }
 }
