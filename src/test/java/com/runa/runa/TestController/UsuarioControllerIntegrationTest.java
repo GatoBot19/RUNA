@@ -1,3 +1,4 @@
+
 package com.runa.runa.TestController;
 
 import com.runa.runa.model.entity.Usuario;
@@ -41,8 +42,11 @@ public class UsuarioControllerIntegrationTest {
         usuarioRepository.deleteAll();
 
         Usuario admin = new Usuario();
+        admin.setNombre("Administrador");
+        admin.setApellido("RUNA");
         admin.setEmail("admin@mail.com");
         admin.setPassword("12345");
+
         usuarioRepository.save(admin);
     }
 
@@ -52,26 +56,35 @@ public class UsuarioControllerIntegrationTest {
         mockMvc.perform(get("/api/usuarios"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data[0].email").value("admin@mail.com"));
+                .andExpect(jsonPath("$.data[0].email")
+                        .value("admin@mail.com"));
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void testGetUsuarioByIdIntegration() throws Exception {
         Usuario usuario = new Usuario();
+
+        usuario.setNombre("Usuario");
+        usuario.setApellido("Ejemplo");
         usuario.setEmail("example@mail.com");
         usuario.setPassword("secreto");
+
         usuario = usuarioRepository.save(usuario);
 
         mockMvc.perform(get("/api/usuarios/" + usuario.getIdUsuario()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.email").value("example@mail.com"));
+                .andExpect(jsonPath("$.data.email")
+                        .value("example@mail.com"));
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void testCreateUsuarioIntegration() throws Exception {
         UsuarioRequest request = new UsuarioRequest();
+
+        request.setNombre("Nuevo");
+        request.setApellido("Usuario");
         request.setEmail("nuevo@mail.com");
         request.setPassword("123456");
 
@@ -79,20 +92,27 @@ public class UsuarioControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Usuario creado exitosamente"))
-                .andExpect(jsonPath("$.data.email").value("nuevo@mail.com"));
+                .andExpect(jsonPath("$.message")
+                        .value("Usuario creado exitosamente"))
+                .andExpect(jsonPath("$.data.email")
+                        .value("nuevo@mail.com"));
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void testDeleteUsuarioIntegration() throws Exception {
-        Usuario u = new Usuario();
-        u.setEmail("delete@mail.com");
-        u.setPassword("xx");
-        u = usuarioRepository.save(u);
+        Usuario usuario = new Usuario();
 
-        mockMvc.perform(delete("/api/usuarios/" + u.getIdUsuario()))
+        usuario.setNombre("Usuario");
+        usuario.setApellido("Eliminar");
+        usuario.setEmail("delete@mail.com");
+        usuario.setPassword("xx");
+
+        usuario = usuarioRepository.save(usuario);
+
+        mockMvc.perform(delete("/api/usuarios/" + usuario.getIdUsuario()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Usuario eliminado exitosamente"));
+                .andExpect(jsonPath("$.message")
+                        .value("Usuario eliminado exitosamente"));
     }
 }
