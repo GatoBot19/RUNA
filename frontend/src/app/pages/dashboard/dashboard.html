@@ -16,8 +16,8 @@
         </svg>
       </div>
       <div>
-        <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Ventas de hoy</p>
-        <p class="text-lg sm:text-xl font-black text-slate-800">S/ 2,450.00</p>
+        <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Ingresos Registrados</p>
+        <p class="text-lg sm:text-xl font-black text-slate-800">S/ {{ totalIngresos() | number:'1.2-2' }}</p>
       </div>
     </div>
 
@@ -30,7 +30,7 @@
       </div>
       <div>
         <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Pedidos activos</p>
-        <p class="text-lg sm:text-xl font-black text-slate-800">16</p>
+        <p class="text-lg sm:text-xl font-black text-slate-800">{{ pedidosActivosCount() }}</p>
       </div>
     </div>
 
@@ -42,8 +42,8 @@
         </svg>
       </div>
       <div>
-        <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Stock productos</p>
-        <p class="text-lg sm:text-xl font-black text-slate-800">248</p>
+        <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Stock Disponible</p>
+        <p class="text-lg sm:text-xl font-black text-slate-800">{{ totalStockUds() }} uds.</p>
       </div>
     </div>
 
@@ -56,7 +56,7 @@
       </div>
       <div>
         <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Clientes activos</p>
-        <p class="text-lg sm:text-xl font-black text-slate-800">125</p>
+        <p class="text-lg sm:text-xl font-black text-slate-800">{{ clientesActivosCount() }}</p>
       </div>
     </div>
 
@@ -124,26 +124,12 @@
         <h3 class="text-sm sm:text-base font-bold text-slate-800 mb-1">Más vendidos</h3>
         <p class="text-xs text-slate-500 mb-4">Top productos con mayor rotación</p>
         <div class="space-y-2.5 sm:space-y-3">
-          <div class="flex items-center justify-between p-2.5 rounded-2xl bg-white/40 border border-white/50">
-            <span class="text-xs font-semibold text-slate-700">Envase plástico 1L</span>
-            <span class="text-xs font-bold text-[#2F80ED] bg-blue-50/80 px-2.5 py-0.5 rounded-full">120 uds.</span>
-          </div>
-          <div class="flex items-center justify-between p-2.5 rounded-2xl bg-white/40 border border-white/50">
-            <span class="text-xs font-semibold text-slate-700">Tapa rosca 28mm</span>
-            <span class="text-xs font-bold text-[#7B5EA7] bg-purple-50/80 px-2.5 py-0.5 rounded-full">95 uds.</span>
-          </div>
-          <div class="flex items-center justify-between p-2.5 rounded-2xl bg-white/40 border border-white/50">
-            <span class="text-xs font-semibold text-slate-700">Botella PET 500ml</span>
-            <span class="text-xs font-bold text-[#2F80ED] bg-blue-50/80 px-2.5 py-0.5 rounded-full">78 uds.</span>
-          </div>
-          <div class="flex items-center justify-between p-2.5 rounded-2xl bg-white/40 border border-white/50">
-            <span class="text-xs font-semibold text-slate-700">Envase cuadrado 2L</span>
-            <span class="text-xs font-bold text-[#7B5EA7] bg-purple-50/80 px-2.5 py-0.5 rounded-full">54 uds.</span>
-          </div>
-          <div class="flex items-center justify-between p-2.5 rounded-2xl bg-white/40 border border-white/50">
-            <span class="text-xs font-semibold text-slate-700">Galonera 5L</span>
-            <span class="text-xs font-bold text-[#2F80ED] bg-blue-50/80 px-2.5 py-0.5 rounded-full">42 uds.</span>
-          </div>
+          @for (prod of topProductos(); track prod.nombre) {
+            <div class="flex items-center justify-between p-2.5 rounded-2xl bg-white/40 border border-white/50">
+              <span class="text-xs font-semibold text-slate-700 truncate pr-2">{{ prod.nombre }}</span>
+              <span class="text-xs font-bold text-[#2F80ED] bg-blue-50/80 px-2.5 py-0.5 rounded-full flex-shrink-0">{{ prod.uds }} uds.</span>
+            </div>
+          }
         </div>
       </div>
     </div>
@@ -156,14 +142,14 @@
     <!-- Pedidos pendientes -->
     <div class="backdrop-blur-xl bg-white/40 border border-white/60 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-[0_8px_30px_rgba(100,80,180,0.06)]">
       <h3 class="text-xs sm:text-sm font-bold text-slate-800 mb-1">Pedidos por despachar</h3>
-      <p class="text-3xl sm:text-4xl font-black bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent my-1 sm:my-2">7</p>
+      <p class="text-3xl sm:text-4xl font-black bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent my-1 sm:my-2">{{ pedidosActivosCount() }}</p>
       <p class="text-xs text-slate-500 font-medium">Requerimientos listos para entrega</p>
     </div>
 
     <!-- Alertas de inventario -->
     <div class="backdrop-blur-xl bg-white/40 border border-white/60 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-[0_8px_30px_rgba(100,80,180,0.06)]">
       <h3 class="text-xs sm:text-sm font-bold text-slate-800 mb-1">Alertas de stock</h3>
-      <p class="text-3xl sm:text-4xl font-black bg-gradient-to-r from-rose-500 to-pink-500 bg-clip-text text-transparent my-1 sm:my-2">5</p>
+      <p class="text-3xl sm:text-4xl font-black bg-gradient-to-r from-rose-500 to-pink-500 bg-clip-text text-transparent my-1 sm:my-2">{{ alertasStockCount() }}</p>
       <p class="text-xs text-slate-500 font-medium">Lotes por debajo del mínimo de seguridad</p>
     </div>
 

@@ -1,43 +1,68 @@
-import { Component } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReporteService } from '../../core/services/reporte.service';
 
 @Component({
-  imports: [],
+  imports: [CommonModule],
   selector: 'app-reportes',
   templateUrl: './reportes.html',
 })
 export class Reportes {
-  descargar(tipo: string) {
-    const urls: Record<string, string> = {
-      'ventas-excel': 'http://localhost:8080/api/reportes/ventas/excel',
-      'ventas-pdf': 'http://localhost:8080/api/reportes/ventas/pdf',
-      'inventario-excel': 'http://localhost:8080/api/reportes/inventario/excel',
-    };
+  private reporteService = inject(ReporteService);
 
-    const token = localStorage.getItem('runa_token');
-    const url = urls[tipo];
+  descargando = signal<string | null>(null);
+  toastMessage = signal<string | null>(null);
+  toastType = signal<'success' | 'error'>('success');
 
-    if (url) {
-      fetch(url, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error('Error al generar el reporte');
-          return res.blob();
-        })
-        .then((blob) => {
-          const downloadUrl = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = downloadUrl;
-          const extension = tipo.includes('pdf') ? 'pdf' : 'xlsx';
-          a.download = `reporte-${tipo}-${new Date().toISOString().slice(0, 10)}.${extension}`;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-        })
-        .catch((err) => {
-          console.error(err);
-          alert('Hubo un error al generar el reporte. Verifica que el backend esté activo.');
-        });
+  descargar(tipo: 'ventas-excel' | 'ventas-pdf' | 'inventario-excel'): void {
+    this.descargando.set(tipo);
+
+    const dateStr = new Date().toISOString().slice(0, 10);
+
+    if (tipo === 'ventas-excel') {
+      this.reporteService.descargarVentasExcel().subscribe({
+        next: (blob) => {
+          this.reporteService.guardarArchivo(blob, `reporte-ventas-${dateStr}.xlsx`);
+          this.descargando.set(null);
+          this.showToast('Reporte de ventas en Excel descargado con éxito');
+        },
+        error: (err) => {
+          this.descargando.set(null);
+          this.showToast('Error al generar el reporte de ventas en Excel', 'error');
+        }
+      });
+    } else if (tipo === 'ventas-pdf') {
+      this.reporteService.descargarVentasPDF().subscribe({
+        next: (blob) => {
+          this.reporteService.guardarArchivo(blob, `reporte-ventas-${dateStr}.pdf`);
+          this.descargando.set(null);
+          this.showToast('Reporte oficial de ventas en PDF descargado con éxito');
+        },
+        error: (err) => {
+          this.descargando.set(null);
+          this.showToast('Error al generar el reporte PDF', 'error');
+        }
+      });
+    } else if (tipo === 'inventario-excel') {
+      this.reporteService.descargarInventarioExcel().subscribe({
+        next: (blob) => {
+          this.reporteService.guardarArchivo(blob, `reporte-inventario-${dateStr}.xlsx`);
+          this.descargando.set(null);
+          this.showToast('Balance de inventario en Excel descargado con éxito');
+        },
+        error: (err) => {
+          this.descargando.set(null);
+          this.showToast('Error al generar el reporte de inventario', 'error');
+        }
+      });
     }
+  }
+
+  showToast(msg: string, type: 'success' | 'error' = 'success'): void {
+    this.toastMessage.set(msg);
+    this.toastType.set(type);
+    setTimeout(() => {
+      this.toastMessage.set(null);
+    }, 3500);
   }
 }

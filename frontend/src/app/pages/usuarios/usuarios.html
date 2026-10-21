@@ -1,4 +1,17 @@
 <div>
+  <!-- Toast Notificación -->
+  @if (toastMessage()) {
+    <div class="fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-3 rounded-2xl shadow-xl backdrop-blur-xl border transition-all animate-bounce"
+         [class.bg-emerald-500/90]="toastType() === 'success'"
+         [class.border-emerald-300]="toastType() === 'success'"
+         [class.text-white]="toastType() === 'success'"
+         [class.bg-rose-500/90]="toastType() === 'error'"
+         [class.border-rose-300]="toastType() === 'error'"
+         [class.text-white]="toastType() === 'error'">
+      <span class="text-sm font-bold">{{ toastMessage() }}</span>
+    </div>
+  }
+
   <!-- Título -->
   <div class="mb-5 sm:mb-6">
     <h1 class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">Usuarios y Seguridad</h1>
@@ -16,7 +29,7 @@
       </div>
       <div>
         <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Total Usuarios</p>
-        <p class="text-lg sm:text-xl font-black text-slate-800">8</p>
+        <p class="text-lg sm:text-xl font-black text-slate-800">{{ totalUsuarios() }}</p>
       </div>
     </div>
 
@@ -28,7 +41,7 @@
       </div>
       <div>
         <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Administradores</p>
-        <p class="text-lg sm:text-xl font-black text-[#7B5EA7]">2</p>
+        <p class="text-lg sm:text-xl font-black text-[#7B5EA7]">{{ adminsCount() }}</p>
       </div>
     </div>
 
@@ -39,8 +52,8 @@
         </svg>
       </div>
       <div>
-        <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Vendedores</p>
-        <p class="text-lg sm:text-xl font-black text-slate-800">6</p>
+        <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Clientes / Otros</p>
+        <p class="text-lg sm:text-xl font-black text-slate-800">{{ otrosCount() }}</p>
       </div>
     </div>
 
@@ -52,7 +65,7 @@
       </div>
       <div>
         <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Activos</p>
-        <p class="text-lg sm:text-xl font-black text-emerald-600">8</p>
+        <p class="text-lg sm:text-xl font-black text-emerald-600">{{ activosCount() }}</p>
       </div>
     </div>
 
@@ -64,11 +77,15 @@
       <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3.5 top-3 w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
       </svg>
-      <input type="text" placeholder="Buscar por nombre, email o DNI..." 
+      <input type="text" 
+             [ngModel]="searchQuery()"
+             (ngModelChange)="searchQuery.set($event)"
+             placeholder="Buscar por nombre, email o DNI..." 
              class="w-full pl-11 pr-4 py-2.5 backdrop-blur-md bg-white/40 border border-white/60 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-400/50 text-sm shadow-[inset_0_1px_2px_rgba(255,255,255,0.5)] placeholder-slate-400">
     </div>
     
-    <button class="bg-gradient-to-r from-[#7B5EA7] to-[#2F80ED] hover:from-[#6A4F94] hover:to-[#2570D4] text-white font-bold text-sm py-2.5 px-5 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(100,60,180,0.25)]">
+    <button (click)="openCreateModal()"
+            class="bg-gradient-to-r from-[#7B5EA7] to-[#2F80ED] hover:from-[#6A4F94] hover:to-[#2570D4] text-white font-bold text-sm py-2.5 px-5 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(100,60,180,0.25)] active:scale-95">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.765Z" />
       </svg>
@@ -90,92 +107,147 @@
             <th class="text-left py-3.5 px-5 font-bold text-slate-700">Acciones</th>
           </tr>
         </thead>
-      <tbody class="divide-y divide-white/40">
-        <tr class="hover:bg-white/50 transition-colors">
-          <td class="py-3.5 px-5">
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-[#7B5EA7] to-[#2F80ED] text-white font-bold flex items-center justify-center text-xs shadow-sm">
-                AD
-              </div>
-              <div>
-                <p class="font-bold text-slate-800">Admin Principal</p>
-                <p class="text-xs text-slate-400">admin&#64;runa.com</p>
-              </div>
-            </div>
-          </td>
-          <td class="py-3.5 px-5 text-slate-600 font-medium">987 654 321</td>
-          <td class="py-3.5 px-5 text-slate-600 font-medium">72849103</td>
-          <td class="py-3.5 px-5">
-            <span class="px-3 py-1 bg-[#7B5EA7]/15 text-[#7B5EA7] border border-[#7B5EA7]/25 rounded-full text-xs font-bold">ADMIN</span>
-          </td>
-          <td class="py-3.5 px-5">
-            <span class="px-3 py-1 bg-emerald-500/15 text-emerald-700 border border-emerald-500/20 rounded-full text-xs font-bold">Activo</span>
-          </td>
-          <td class="py-3.5 px-5">
-            <div class="flex items-center gap-3">
-              <a class="text-[#2F80ED] hover:text-[#7B5EA7] font-bold cursor-pointer text-xs transition-colors">Editar</a>
-              <a class="text-slate-400 hover:text-rose-500 font-bold cursor-pointer text-xs transition-colors">Suspender</a>
-            </div>
-          </td>
-        </tr>
-
-        <tr class="hover:bg-white/50 transition-colors">
-          <td class="py-3.5 px-5">
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-cyan-400 to-blue-500 text-white font-bold flex items-center justify-center text-xs shadow-sm">
-                JP
-              </div>
-              <div>
-                <p class="font-bold text-slate-800">Juan Pérez</p>
-                <p class="text-xs text-slate-400">jperez&#64;runa.com</p>
-              </div>
-            </div>
-          </td>
-          <td class="py-3.5 px-5 text-slate-600 font-medium">912 345 678</td>
-          <td class="py-3.5 px-5 text-slate-600 font-medium">45102938</td>
-          <td class="py-3.5 px-5">
-            <span class="px-3 py-1 bg-blue-500/15 text-blue-700 border border-blue-500/20 rounded-full text-xs font-bold">VENDEDOR</span>
-          </td>
-          <td class="py-3.5 px-5">
-            <span class="px-3 py-1 bg-emerald-500/15 text-emerald-700 border border-emerald-500/20 rounded-full text-xs font-bold">Activo</span>
-          </td>
-          <td class="py-3.5 px-5">
-            <div class="flex items-center gap-3">
-              <a class="text-[#2F80ED] hover:text-[#7B5EA7] font-bold cursor-pointer text-xs transition-colors">Editar</a>
-              <a class="text-slate-400 hover:text-rose-500 font-bold cursor-pointer text-xs transition-colors">Suspender</a>
-            </div>
-          </td>
-        </tr>
-
-        <tr class="hover:bg-white/50 transition-colors">
-          <td class="py-3.5 px-5">
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-purple-400 to-pink-500 text-white font-bold flex items-center justify-center text-xs shadow-sm">
-                ML
-              </div>
-              <div>
-                <p class="font-bold text-slate-800">María López</p>
-                <p class="text-xs text-slate-400">mlopez&#64;runa.com</p>
-              </div>
-            </div>
-          </td>
-          <td class="py-3.5 px-5 text-slate-600 font-medium">954 123 789</td>
-          <td class="py-3.5 px-5 text-slate-600 font-medium">78492019</td>
-          <td class="py-3.5 px-5">
-            <span class="px-3 py-1 bg-blue-500/15 text-blue-700 border border-blue-500/20 rounded-full text-xs font-bold">VENDEDOR</span>
-          </td>
-          <td class="py-3.5 px-5">
-            <span class="px-3 py-1 bg-emerald-500/15 text-emerald-700 border border-emerald-500/20 rounded-full text-xs font-bold">Activo</span>
-          </td>
-          <td class="py-3.5 px-5">
-            <div class="flex items-center gap-3">
-              <a class="text-[#2F80ED] hover:text-[#7B5EA7] font-bold cursor-pointer text-xs transition-colors">Editar</a>
-              <a class="text-slate-400 hover:text-rose-500 font-bold cursor-pointer text-xs transition-colors">Suspender</a>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+        <tbody class="divide-y divide-white/40">
+          @if (loading()) {
+            <tr>
+              <td colspan="6" class="py-8 text-center text-slate-500 font-medium">Cargando usuarios de la base de datos...</td>
+            </tr>
+          } @else if (filteredUsuarios().length === 0) {
+            <tr>
+              <td colspan="6" class="py-8 text-center text-slate-500 font-medium">No se encontraron usuarios.</td>
+            </tr>
+          } @else {
+            @for (u of filteredUsuarios(); track u.idUsuario) {
+              <tr class="hover:bg-white/50 transition-colors">
+                <td class="py-3.5 px-5">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-[#7B5EA7] to-[#2F80ED] text-white font-bold flex items-center justify-center text-xs shadow-sm">
+                      {{ getInitials(u) }}
+                    </div>
+                    <div>
+                      <p class="font-bold text-slate-800">{{ u.nombre }} {{ u.apellido }}</p>
+                      <p class="text-xs text-slate-400">{{ u.email }}</p>
+                    </div>
+                  </div>
+                </td>
+                <td class="py-3.5 px-5 text-slate-600 font-medium">{{ u.telefono || 'Sin teléfono' }}</td>
+                <td class="py-3.5 px-5 text-slate-600 font-medium">{{ u.dni || 'Sin DNI' }}</td>
+                <td class="py-3.5 px-5">
+                  <span class="px-3 py-1 rounded-full text-xs font-bold border"
+                        [class.bg-[#7B5EA7]/15]="u.rol?.toUpperCase() === 'ADMIN'"
+                        [class.text-[#7B5EA7]]="u.rol?.toUpperCase() === 'ADMIN'"
+                        [class.border-[#7B5EA7]/25]="u.rol?.toUpperCase() === 'ADMIN'"
+                        [class.bg-blue-500/15]="u.rol?.toUpperCase() !== 'ADMIN'"
+                        [class.text-blue-700]="u.rol?.toUpperCase() !== 'ADMIN'"
+                        [class.border-blue-500/20]="u.rol?.toUpperCase() !== 'ADMIN'">
+                    {{ u.rol?.toUpperCase() }}
+                  </span>
+                </td>
+                <td class="py-3.5 px-5">
+                  <span class="px-3 py-1 rounded-full text-xs font-bold border"
+                        [class.bg-emerald-500/15]="u.activo !== false"
+                        [class.text-emerald-700]="u.activo !== false"
+                        [class.border-emerald-500/20]="u.activo !== false"
+                        [class.bg-rose-500/15]="u.activo === false"
+                        [class.text-rose-700]="u.activo === false"
+                        [class.border-rose-500/20]="u.activo === false">
+                    {{ u.activo !== false ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </td>
+                <td class="py-3.5 px-5">
+                  @if (u.email !== 'admin@runa.local') {
+                    <button (click)="eliminar(u)" 
+                            class="text-rose-500 hover:text-rose-700 font-bold text-xs transition-colors">
+                      Eliminar
+                    </button>
+                  } @else {
+                    <span class="text-xs text-slate-400 font-semibold italic">Protegido</span>
+                  }
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
     </div>
   </div>
+
+  <!-- Modal Nuevo Usuario -->
+  @if (showModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
+      <div class="backdrop-blur-2xl bg-white/95 border border-white/80 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-[0_20px_60px_rgba(100,80,180,0.2)] max-h-[90vh] overflow-y-auto">
+        
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="text-lg font-black text-slate-800">Crear Nuevo Usuario</h3>
+          <button (click)="closeModal()" class="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <form (ngSubmit)="guardar()" class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nombre *</label>
+              <input type="text" [(ngModel)]="formNombre" name="nombre" placeholder="Nombre" required
+                     class="w-full px-4 py-2.5 backdrop-blur-md bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-400/50 font-medium">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Apellido *</label>
+              <input type="text" [(ngModel)]="formApellido" name="apellido" placeholder="Apellido" required
+                     class="w-full px-4 py-2.5 backdrop-blur-md bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-400/50 font-medium">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Correo Electrónico *</label>
+            <input type="email" [(ngModel)]="formEmail" name="email" placeholder="usuario@runa.local" required
+                   class="w-full px-4 py-2.5 backdrop-blur-md bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-400/50 font-medium">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Contraseña *</label>
+            <input type="password" [(ngModel)]="formPassword" name="password" placeholder="Mínimo 6 caracteres" required minlength="6"
+                   class="w-full px-4 py-2.5 backdrop-blur-md bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-400/50 font-medium">
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">DNI</label>
+              <input type="text" [(ngModel)]="formDni" name="dni" placeholder="8 dígitos" maxlength="8"
+                     class="w-full px-4 py-2.5 backdrop-blur-md bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-400/50 font-medium">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Teléfono</label>
+              <input type="text" [(ngModel)]="formTelefono" name="telefono" placeholder="987 654 321"
+                     class="w-full px-4 py-2.5 backdrop-blur-md bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-400/50 font-medium">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Rol en el Sistema</label>
+            <select [(ngModel)]="formRol" name="rol"
+                    class="w-full px-4 py-2.5 backdrop-blur-md bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-400/50 font-medium">
+              <option value="ADMIN">Administrador (Acceso Total)</option>
+              <option value="VENDEDOR">Vendedor / Operador</option>
+              <option value="CLIENTE">Cliente</option>
+            </select>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 pt-3">
+            <button type="button" (click)="closeModal()"
+                    class="px-5 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold transition-all">
+              Cancelar
+            </button>
+            <button type="submit" [disabled]="saving()"
+                    class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-[#7B5EA7] to-[#2F80ED] hover:from-[#6A4F94] hover:to-[#2570D4] text-white text-sm font-bold transition-all shadow-[0_4px_16px_rgba(100,60,180,0.3)] disabled:opacity-50">
+              {{ saving() ? 'Creando...' : 'Crear Usuario' }}
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  }
 </div>

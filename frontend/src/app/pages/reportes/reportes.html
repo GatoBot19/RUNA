@@ -1,4 +1,17 @@
 <div>
+  <!-- Toast Notificación -->
+  @if (toastMessage()) {
+    <div class="fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-3 rounded-2xl shadow-xl backdrop-blur-xl border transition-all animate-bounce"
+         [class.bg-emerald-500/90]="toastType() === 'success'"
+         [class.border-emerald-300]="toastType() === 'success'"
+         [class.text-white]="toastType() === 'success'"
+         [class.bg-rose-500/90]="toastType() === 'error'"
+         [class.border-rose-300]="toastType() === 'error'"
+         [class.text-white]="toastType() === 'error'">
+      <span class="text-sm font-bold">{{ toastMessage() }}</span>
+    </div>
+  }
+
   <!-- Título -->
   <div class="mb-5 sm:mb-6">
     <h1 class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">Reportes y Business Intelligence</h1>

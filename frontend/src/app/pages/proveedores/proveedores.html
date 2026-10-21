@@ -1,4 +1,17 @@
 <div>
+  <!-- Toast Notificación -->
+  @if (toastMessage()) {
+    <div class="fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-3 rounded-2xl shadow-xl backdrop-blur-xl border transition-all animate-bounce"
+         [class.bg-emerald-500/90]="toastType() === 'success'"
+         [class.border-emerald-300]="toastType() === 'success'"
+         [class.text-white]="toastType() === 'success'"
+         [class.bg-rose-500/90]="toastType() === 'error'"
+         [class.border-rose-300]="toastType() === 'error'"
+         [class.text-white]="toastType() === 'error'">
+      <span class="text-sm font-bold">{{ toastMessage() }}</span>
+    </div>
+  }
+
   <!-- Título -->
   <div class="mb-5 sm:mb-6">
     <h1 class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">Proveedores y Abastecimiento</h1>
@@ -15,20 +28,20 @@
         </svg>
       </div>
       <div>
-        <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Proveedores Activos</p>
-        <p class="text-lg sm:text-xl font-black text-slate-800">18</p>
+        <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Proveedores Registrados</p>
+        <p class="text-lg sm:text-xl font-black text-slate-800">{{ totalProveedores() }}</p>
       </div>
     </div>
 
     <div class="backdrop-blur-xl bg-white/40 border border-white/60 rounded-2xl sm:rounded-3xl p-4 sm:p-5 flex items-center gap-4 shadow-[0_8px_30px_rgba(100,80,180,0.06)] hover:bg-white/50 transition-all">
       <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-400/20 to-teal-400/20 border border-white/60 flex items-center justify-center shadow-inner flex-shrink-0">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6H2.25m0 0v1.5c0 .414.336.75.75.75h.75m0 0h16.5m0 0h.75a.75.75 0 0 0 .75-.75V6m0 0h-.75a.75.75 0 0 1-.75-.75v-.75m-16.5 0h16.5" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
         </svg>
       </div>
       <div>
-        <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Compras del Mes</p>
-        <p class="text-lg sm:text-xl font-black text-slate-800">S/ 42,500</p>
+        <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Activos / Homologados</p>
+        <p class="text-lg sm:text-xl font-black text-slate-800">{{ activosCount() }}</p>
       </div>
     </div>
 
@@ -39,8 +52,8 @@
         </svg>
       </div>
       <div>
-        <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Lotes en Tránsito</p>
-        <p class="text-lg sm:text-xl font-black text-slate-800">3</p>
+        <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Insumos Críticos</p>
+        <p class="text-lg sm:text-xl font-black text-slate-800">PET / Tapas / Pigmentos</p>
       </div>
     </div>
 
@@ -51,8 +64,8 @@
         </svg>
       </div>
       <div>
-        <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Órdenes de Compra</p>
-        <p class="text-lg sm:text-xl font-black text-[#7B5EA7]">9</p>
+        <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Cadena de Suministro</p>
+        <p class="text-lg sm:text-xl font-black text-[#7B5EA7]">Operativa</p>
       </div>
     </div>
 
@@ -64,11 +77,15 @@
       <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3.5 top-3 w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
       </svg>
-      <input type="text" placeholder="Buscar proveedor por RUC o empresa..." 
+      <input type="text" 
+             [ngModel]="searchQuery()"
+             (ngModelChange)="searchQuery.set($event)"
+             placeholder="Buscar proveedor por RUC o empresa..." 
              class="w-full pl-11 pr-4 py-2.5 backdrop-blur-md bg-white/40 border border-white/60 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-400/50 text-sm shadow-[inset_0_1px_2px_rgba(255,255,255,0.5)] placeholder-slate-400">
     </div>
     
-    <button class="bg-gradient-to-r from-[#7B5EA7] to-[#2F80ED] hover:from-[#6A4F94] hover:to-[#2570D4] text-white font-bold text-sm py-2.5 px-5 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(100,60,180,0.25)]">
+    <button (click)="openCreateModal()"
+            class="bg-gradient-to-r from-[#7B5EA7] to-[#2F80ED] hover:from-[#6A4F94] hover:to-[#2570D4] text-white font-bold text-sm py-2.5 px-5 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(100,60,180,0.25)] active:scale-95">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
       </svg>
@@ -85,61 +102,209 @@
             <th class="text-left py-3.5 px-5 font-bold text-slate-700">Razón Social</th>
             <th class="text-left py-3.5 px-5 font-bold text-slate-700">RUC</th>
             <th class="text-left py-3.5 px-5 font-bold text-slate-700">Insumos Suministrados</th>
-            <th class="text-left py-3.5 px-5 font-bold text-slate-700">Contacto</th>
+            <th class="text-left py-3.5 px-5 font-bold text-slate-700">Contacto / Teléfono</th>
             <th class="text-left py-3.5 px-5 font-bold text-slate-700">Estado</th>
             <th class="text-left py-3.5 px-5 font-bold text-slate-700">Acciones</th>
           </tr>
         </thead>
-      <tbody class="divide-y divide-white/40">
-        <tr class="hover:bg-white/50 transition-colors">
-          <td class="py-3.5 px-5">
-            <p class="font-bold text-slate-800">Petroquímica Andina S.A.</p>
-            <p class="text-xs text-slate-400">Lima, Perú</p>
-          </td>
-          <td class="py-3.5 px-5 font-semibold text-slate-700">20109283741</td>
-          <td class="py-3.5 px-5 text-slate-600 font-medium">Polietileno virgen (PEAD / PET)</td>
-          <td class="py-3.5 px-5 text-slate-600 font-medium">contacto&#64;petroandina.com</td>
-          <td class="py-3.5 px-5">
-            <span class="px-3 py-1 bg-emerald-500/15 text-emerald-700 border border-emerald-500/20 rounded-full text-xs font-bold">Homologado</span>
-          </td>
-          <td class="py-3.5 px-5">
-            <a class="text-[#2F80ED] hover:text-[#7B5EA7] font-bold cursor-pointer text-xs transition-colors">Ver Ficha</a>
-          </td>
-        </tr>
-
-        <tr class="hover:bg-white/50 transition-colors">
-          <td class="py-3.5 px-5">
-            <p class="font-bold text-slate-800">Plásticos & Matrices del Sur E.I.R.L.</p>
-            <p class="text-xs text-slate-400">Arequipa, Perú</p>
-          </td>
-          <td class="py-3.5 px-5 font-semibold text-slate-700">20491820492</td>
-          <td class="py-3.5 px-5 text-slate-600 font-medium">Tapas rosca, precintos y liners</td>
-          <td class="py-3.5 px-5 text-slate-600 font-medium">ventas&#64;plasticossur.pe</td>
-          <td class="py-3.5 px-5">
-            <span class="px-3 py-1 bg-emerald-500/15 text-emerald-700 border border-emerald-500/20 rounded-full text-xs font-bold">Homologado</span>
-          </td>
-          <td class="py-3.5 px-5">
-            <a class="text-[#2F80ED] hover:text-[#7B5EA7] font-bold cursor-pointer text-xs transition-colors">Ver Ficha</a>
-          </td>
-        </tr>
-
-        <tr class="hover:bg-white/50 transition-colors">
-          <td class="py-3.5 px-5">
-            <p class="font-bold text-slate-800">Colorantes & Masterbatch del Centro</p>
-            <p class="text-xs text-slate-400">Huancayo, Perú</p>
-          </td>
-          <td class="py-3.5 px-5 font-semibold text-slate-700">20583910294</td>
-          <td class="py-3.5 px-5 text-slate-600 font-medium">Pigmentos y aditivos grado alimenticio</td>
-          <td class="py-3.5 px-5 text-slate-600 font-medium">964 128 392</td>
-          <td class="py-3.5 px-5">
-            <span class="px-3 py-1 bg-emerald-500/15 text-emerald-700 border border-emerald-500/20 rounded-full text-xs font-bold">Homologado</span>
-          </td>
-          <td class="py-3.5 px-5">
-            <a class="text-[#2F80ED] hover:text-[#7B5EA7] font-bold cursor-pointer text-xs transition-colors">Ver Ficha</a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+        <tbody class="divide-y divide-white/40">
+          @if (filteredProveedores().length === 0) {
+            <tr>
+              <td colspan="6" class="py-8 text-center text-slate-500 font-medium">No se encontraron proveedores.</td>
+            </tr>
+          } @else {
+            @for (p of filteredProveedores(); track p.id) {
+              <tr class="hover:bg-white/50 transition-colors">
+                <td class="py-3.5 px-5">
+                  <p class="font-bold text-slate-800">{{ p.razonSocial }}</p>
+                  <p class="text-xs text-slate-400">{{ p.email }}</p>
+                </td>
+                <td class="py-3.5 px-5 font-semibold text-slate-700">{{ p.ruc }}</td>
+                <td class="py-3.5 px-5 text-slate-600 font-medium">{{ p.categoria }}</td>
+                <td class="py-3.5 px-5 text-slate-600 font-medium">
+                  {{ p.contacto }} • {{ p.telefono }}
+                </td>
+                <td class="py-3.5 px-5">
+                  <span class="px-3 py-1 rounded-full text-xs font-bold border"
+                        [class.bg-emerald-500/15]="p.estado === 'Activo'"
+                        [class.text-emerald-700]="p.estado === 'Activo'"
+                        [class.border-emerald-500/20]="p.estado === 'Activo'"
+                        [class.bg-slate-400/15]="p.estado !== 'Activo'"
+                        [class.text-slate-600]="p.estado !== 'Activo'"
+                        [class.border-slate-400/20]="p.estado !== 'Activo'">
+                    {{ p.estado === 'Activo' ? 'Homologado' : 'Inactivo' }}
+                  </span>
+                </td>
+                <td class="py-3.5 px-5 flex items-center gap-3">
+                  <button (click)="verFicha(p)" 
+                          class="text-[#2F80ED] hover:text-[#7B5EA7] font-bold text-xs transition-colors">
+                    Ver Ficha
+                  </button>
+                  <span class="text-slate-300">|</span>
+                  <button (click)="openEditModal(p)" 
+                          class="text-slate-600 hover:text-slate-900 font-bold text-xs transition-colors">
+                    Editar
+                  </button>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
     </div>
   </div>
+
+  <!-- Modal Crear / Editar Proveedor -->
+  @if (showModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
+      <div class="backdrop-blur-2xl bg-white/95 border border-white/80 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-[0_20px_60px_rgba(100,80,180,0.2)] max-h-[90vh] overflow-y-auto">
+        
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="text-lg font-black text-slate-800">
+            {{ isEditing() ? 'Editar Proveedor' : 'Nuevo Proveedor' }}
+          </h3>
+          <button (click)="closeModal()" class="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <form (ngSubmit)="guardar()" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Razón Social *</label>
+            <input type="text" [(ngModel)]="formRazonSocial" name="razonSocial" placeholder="Ej: Petroquímica del Pacífico SA" required
+                   class="w-full px-4 py-2.5 backdrop-blur-md bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-400/50 font-medium">
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">RUC (11 dígitos) *</label>
+              <input type="text" [(ngModel)]="formRuc" name="ruc" placeholder="20..." maxlength="11" required
+                     class="w-full px-4 py-2.5 backdrop-blur-md bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-400/50 font-medium">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Contacto / Asesor</label>
+              <input type="text" [(ngModel)]="formContacto" name="contacto" placeholder="Nombre asesor comercial"
+                     class="w-full px-4 py-2.5 backdrop-blur-md bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-400/50 font-medium">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Teléfono</label>
+              <input type="text" [(ngModel)]="formTelefono" name="telefono" placeholder="981 123 456"
+                     class="w-full px-4 py-2.5 backdrop-blur-md bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-400/50 font-medium">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email</label>
+              <input type="email" [(ngModel)]="formEmail" name="email" placeholder="ventas@proveedor.pe"
+                     class="w-full px-4 py-2.5 backdrop-blur-md bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-400/50 font-medium">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Línea de Suministro / Insumos</label>
+            <input type="text" [(ngModel)]="formCategoria" name="categoria" placeholder="Ej: Polietileno virgen (PEAD / PET)"
+                   class="w-full px-4 py-2.5 backdrop-blur-md bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-400/50 font-medium">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Estado de Homologación</label>
+            <select [(ngModel)]="formEstado" name="estado"
+                    class="w-full px-4 py-2.5 backdrop-blur-md bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-400/50 font-medium">
+              <option value="Activo">Homologado / Activo</option>
+              <option value="Inactivo">Suspendido / Inactivo</option>
+            </select>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 pt-3">
+            <button type="button" (click)="closeModal()"
+                    class="px-5 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold transition-all">
+              Cancelar
+            </button>
+            <button type="submit"
+                    class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-[#7B5EA7] to-[#2F80ED] hover:from-[#6A4F94] hover:to-[#2570D4] text-white text-sm font-bold transition-all shadow-[0_4px_16px_rgba(100,60,180,0.3)]">
+              {{ isEditing() ? 'Actualizar' : 'Guardar' }}
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  }
+
+  <!-- Modal Ficha de Proveedor -->
+  @if (showFichaModal() && selectedProveedor(); as sp) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
+      <div class="backdrop-blur-2xl bg-white/95 border border-white/80 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-[0_20px_60px_rgba(100,80,180,0.2)]">
+        
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-black text-slate-800">Ficha Técnica de Proveedor</h3>
+          <button (click)="closeFicha()" class="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="space-y-3 py-2 text-sm">
+          <div class="flex justify-between py-1.5 border-b border-slate-100">
+            <span class="text-slate-500">Código:</span>
+            <span class="font-bold text-slate-800">{{ sp.id }}</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100">
+            <span class="text-slate-500">Razón Social:</span>
+            <span class="font-bold text-slate-800">{{ sp.razonSocial }}</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100">
+            <span class="text-slate-500">RUC:</span>
+            <span class="font-bold text-slate-800">{{ sp.ruc }}</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100">
+            <span class="text-slate-500">Insumos:</span>
+            <span class="font-bold text-[#7B5EA7]">{{ sp.categoria }}</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100">
+            <span class="text-slate-500">Contacto:</span>
+            <span class="font-medium text-slate-800">{{ sp.contacto }}</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100">
+            <span class="text-slate-500">Teléfono:</span>
+            <span class="font-medium text-slate-800">{{ sp.telefono }}</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-slate-100">
+            <span class="text-slate-500">Email:</span>
+            <span class="font-medium text-slate-700">{{ sp.email }}</span>
+          </div>
+          <div class="flex justify-between py-1.5">
+            <span class="text-slate-500">Homologación:</span>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold"
+                  [class.bg-emerald-100]="sp.estado === 'Activo'"
+                  [class.text-emerald-800]="sp.estado === 'Activo'">
+              {{ sp.estado === 'Activo' ? 'Homologado' : 'Inactivo' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between gap-3 pt-5 mt-2 border-t border-slate-200">
+          <button type="button" (click)="eliminar(sp.id)"
+                  class="px-4 py-2 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs transition-colors">
+            Eliminar
+          </button>
+          <div class="flex items-center gap-2">
+            <button type="button" (click)="closeFicha(); openEditModal(sp)"
+                    class="px-4 py-2 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors">
+              Editar
+            </button>
+            <button type="button" (click)="closeFicha()"
+                    class="px-5 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs transition-all">
+              Cerrar
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
 </div>

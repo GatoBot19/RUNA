@@ -133,10 +133,10 @@
 
     <!-- Cerrar sesión -->
     <div class="p-4 sm:p-5">
-      <a routerLink="/login" (click)="closeSidebar()"
-         class="flex items-center justify-center gap-3 px-4 py-2.5 backdrop-blur-md bg-white/40 border border-white/50 rounded-2xl text-[#7B5EA7] shadow-[0_2px_8px_rgba(100,60,180,0.1)] hover:bg-white/60 transition-all text-sm font-bold">
+      <button (click)="logout()"
+         class="w-full flex items-center justify-center gap-3 px-4 py-2.5 backdrop-blur-md bg-white/40 border border-white/50 rounded-2xl text-[#7B5EA7] shadow-[0_2px_8px_rgba(100,60,180,0.1)] hover:bg-white/60 transition-all text-sm font-bold">
         <span>Cerrar sesión</span>
-      </a>
+      </button>
     </div>
 
   </aside>
@@ -184,11 +184,11 @@
         <!-- Perfil -->
         <div class="flex items-center gap-2 sm:gap-3">
           <div class="w-9 h-9 sm:w-10 sm:h-10 backdrop-blur-md bg-white/40 border border-white/50 rounded-full flex items-center justify-center shadow-sm">
-            <span class="text-[#7B5EA7] text-xs sm:text-sm font-bold">A</span>
+            <span class="text-[#7B5EA7] text-xs sm:text-sm font-bold">{{ userInitial() }}</span>
           </div>
           <div class="hidden sm:block">
-            <p class="text-sm font-black text-slate-900 leading-tight">Administrador</p>
-            <p class="text-[11px] text-slate-500">Administrador</p>
+            <p class="text-sm font-black text-slate-900 leading-tight">{{ userName() }}</p>
+            <p class="text-[11px] text-slate-500 uppercase font-semibold">{{ userRole() }}</p>
           </div>
         </div>
       </div>
