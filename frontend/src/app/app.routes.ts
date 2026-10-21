@@ -12,12 +12,14 @@ import { Pedidos } from './pages/pedidos/pedidos';
 import { Clientes } from './pages/clientes/clientes';
 import { Proveedores } from './pages/proveedores/proveedores';
 import { Configuracion } from './pages/configuracion/configuracion';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   {
     path: '',
     component: Layout,
+    canActivate: [authGuard],
     children: [
       { path: 'dashboard', component: Dashboard },
       { path: 'productos', component: Productos },
@@ -32,5 +34,6 @@ export const routes: Routes = [
       { path: 'configuracion', component: Configuracion },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
-  }
+  },
+  { path: '**', redirectTo: 'login' }
 ];
